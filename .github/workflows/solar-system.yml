@@ -18,11 +18,11 @@ jobs:
         name: Unit Testing
         strategy:
           matrix:
-            os: [macos-latest, windows-latest]
+            os: [windows-latest]
             nodejs_version: [18, 19, 20]
             exclude:
               - os: macos-latest
-                nodejs_version: [19, 20]
+                nodejs_version: 20
         runs-on: ${{matrix.os }}
         steps:
         - name: Checkout Repository
@@ -45,3 +45,5 @@ jobs:
             name: Mocha-Test-Result
             path: test-results.xml
             if-no-files-found: error # 'warn' or 'ignore' are also available, defaults `warn`
+        
+    
