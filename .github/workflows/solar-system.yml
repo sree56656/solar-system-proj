@@ -68,6 +68,9 @@ jobs:
     
         - name: Install Dependencies
           run: npm install
+        
+        - name: check code coverage
+          run: npm run coverage
     
         - name: Unit Testing
           run: npm test
@@ -75,6 +78,6 @@ jobs:
         - name: Archive Test Result
           uses: actions/upload-artifact@v4
           with:
-            name: Mocha-Test-Result
-            path: test-results.xml
-    
+            name: code-coverage-result
+            path: coverage
+            retention-days: 1    
