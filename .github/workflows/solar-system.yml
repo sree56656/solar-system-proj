@@ -9,14 +9,18 @@ on:
 
 env:
     MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
-    MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
-    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}   
+    MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}    # setup as part of variabe for the repo
+    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}   # setup as part of secret variable for the repo
   
     
 jobs:
     unit-testing:
         name: Unit Testing
-        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            os: [windows-latest]
+            nodejs_version: [18]
+        runs-on: ${{matrix.os }}
         steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
@@ -24,7 +28,7 @@ jobs:
         - name: Setup NodeJS Version
           uses: actions/setup-node@v3
           with:
-            node-version: 20
+            node-version: ${{ matrix.nodejs_version  }}
     
         - name: Install Dependencies
           run: npm install
@@ -38,3 +42,43 @@ jobs:
             name: Mocha-Test-Result
             path: test-results.xml
             if-no-files-found: error # 'warn' or 'ignore' are also available, defaults `warn`
+
+    code-coverage:
+        name: Code Coverage
+        # container: 
+        #     image: node:18
+        # services:
+        #   mongo-db:
+        #     image: siddharth67/mongo-db:non-prod
+        #     options: 
+        #         --name mongo
+        # env:
+        #     MONGO_URI: 'mongodb://mongo:27017/superData'
+        #     MONGO_USERNAME: non-prod-user
+        #     MONGO_PASSWORD: non-prod-password
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: Setup NodeJS Version
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18
+    
+        - name: Install Dependencies
+          run: npm install
+        
+        - name: check code coverage
+          continue-on-error: true   # if job fails also it continnues the flow and shows failure in Annotation
+          run: npm run coverage
+    
+        - name: Unit Testing
+          run: npm test
+          
+        - name: Archive Test Result
+          uses: actions/upload-artifact@v4
+          with:
+            name: code-coverage-result
+            path: coverage
+            retention-days: 1    # coverage file deletes after 1 day
