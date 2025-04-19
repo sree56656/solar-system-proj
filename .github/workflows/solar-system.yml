@@ -34,9 +34,12 @@ jobs:
           run: npm install
     
         - name: Unit Testing
+          id: nodejs-unit-test-result
           run: npm test
           
         - name: Archive Test Result
+          if: failure() && (steps.nodejs-unit-test-result.outcome == 'failure' || steps.nodejs-unit-test-result.outcome == 'success')
+          # if: failure() && (steps.nodejs-unit-test-result.outcome == 'failure' || steps.nodejs-unit-test-result.outcome == 'success')
           uses: actions/upload-artifact@v4
           with:
             name: Mocha-Test-Result
