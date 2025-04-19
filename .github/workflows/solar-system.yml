@@ -9,8 +9,8 @@ on:
 
 env:
     MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
-    MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
-    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}   
+    MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}    # setup as part of variabe for the repo
+    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}   # setup as part of secret variable for the repo
   
     
 jobs:
@@ -70,7 +70,7 @@ jobs:
           run: npm install
         
         - name: check code coverage
-          continue-on-error: true
+          continue-on-error: true   # if job fails also it continnues the flow and shows failure in Annotation
           run: npm run coverage
     
         - name: Unit Testing
@@ -81,4 +81,4 @@ jobs:
           with:
             name: code-coverage-result
             path: coverage
-            retention-days: 1    
+            retention-days: 1    # coverage file deletes after 1 day
