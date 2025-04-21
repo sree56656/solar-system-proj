@@ -29,6 +29,18 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: ${{ matrix.nodejs_version  }}
+
+        # Cacheing dependencies, whenever json file changes new cache will be created
+        # cached which were part of package.json - this hash key changes whenever you modify package.json file
+        - name: Cache NPM dependencies
+          # id: cache-npm
+          uses: actions/cache@v4
+          env:
+            cache-name: cache-node-modules
+          with:
+            # npm cache files are stored in `~/.npm` on Linux/macOS
+            path: node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
     
         - name: Install Dependencies
           run: npm install
@@ -68,6 +80,18 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 18
+        
+        # Cacheing dependencies, whenever json file changes new cache will be created
+        # cached which were part of package.json - this hash key changes whenever you modify package.json file
+        - name: Cache NPM dependencies
+          # id: cache-npm
+          uses: actions/cache@v4
+          env:
+            cache-name: cache-node-modules
+          with:
+            # npm cache files are stored in `~/.npm` on Linux/macOS
+            path: node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
     
         - name: Install Dependencies
           run: npm install
