@@ -117,11 +117,35 @@ jobs:
       needs: [code-coverage, unit-testing]
       runs-on: ubuntu-latest
       steps:
+        # checking out to repo
         - name: Checkout Repository
           uses: actions/checkout@v4
-          
+        # login to docker
         - name: Login to Docker Hub
           uses: docker/login-action@v3
           with:
             username: ${{ vars.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
+            
+        - name: Docker build for testing
+          uses: docker/build-push-action@v6
+          with:
+            context: . # . means it search for docker file in the root
+            push: false
+            tags: ${{ vars.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha }}
+
+        - name: Docker image test
+          run: |
+            docker images
+            docker run --namesolar-system-app -d \
+                -p 3000:3000 \
+                -e MONGO_URI=$MONGO_URI \
+                -e MONGO_USERNAME=$MONGO_USERNAME \
+                -e MONGO_PASSWORD=$MONGO_PASSWORD \
+                ${{ env.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+
+            export IP=${docker inspect -f '{{range .Networksettings.Networks}}{{.IPAddress}}{{end}}' solar-system-app}
+            echo $IP
+
+            echo Testing Image URL using wget
+            wget -1 -o 127.0.0.1:3000/live | grep live
