@@ -74,26 +74,27 @@ jobs:
 
     code-coverage:
         name: Code Coverage
-        # container: 
-        #     image: node:18
-        # services:
-        #   mongo-db:
-        #     image: siddharth67/mongo-db:non-prod
-        #     options: 
-        #         --name mongo
-        # env:
-        #     MONGO_URI: 'mongodb://mongo:27017/superData'
-        #     MONGO_USERNAME: non-prod-user
-        #     MONGO_PASSWORD: non-prod-password
+        container: 
+            image: node:18
+        services:
+          mongo-db:
+            image: siddharth67/mongo-db:non-prod
+            # port mapping not required as all ports are open between the jobs
+            options: 
+                --name mongo
+        env:
+            MONGO_URI: 'mongodb://mongo:27017/superData'
+            MONGO_USERNAME: non-prod-user
+            MONGO_PASSWORD: non-prod-password
         runs-on: ubuntu-latest
         steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version
-          uses: actions/setup-node@v3
-          with:
-            node-version: 18
+        # - name: Setup NodeJS Version
+        #   uses: actions/setup-node@v3
+        #   with:
+        #     node-version: 18
         
         # Cacheing dependencies, whenever json file changes new cache will be created
         # cached which were part of package.json - this hash key changes whenever you modify package.json file
