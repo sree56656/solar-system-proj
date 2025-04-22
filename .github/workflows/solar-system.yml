@@ -16,6 +16,19 @@ env:
 jobs:
     unit-testing:
         name: Unit Testing
+        services:
+          # Label used to access the service container
+          mongo-db:
+            # Docker Hub image
+            image: siddharth67/mongo-db:non-prod
+            ports: 
+              - 27017:27017
+
+        env:
+          MONGO_URI: 'mongodb://localhost:27017/superData'
+          MONGO_USERNAME: non-prod-user    # setup as part of variabe for the repo
+          MONGO_PASSWORD: non-prod-password   # setup as part of secret variable for the repo
+  
         strategy:
           matrix:
             os: [windows-latest]
