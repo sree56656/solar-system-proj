@@ -31,7 +31,7 @@ jobs:
   
         strategy:
           matrix:
-            os: [windows-latest]
+            os: [ubuntu-latest]
             nodejs_version: [18]
         runs-on: ${{matrix.os }}
         steps:
