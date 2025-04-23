@@ -206,7 +206,7 @@ jobs:
           
         - name: fetch kuberneters cluster details
           run: |
-            kubectl version --short
+            kubectl version
             echo -------------------------------------------------
               kubectl get nodes
 
